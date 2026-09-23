@@ -31,19 +31,22 @@ def gerar_coordenadas(linha_inicial, coluna_inicial, tamanho, horizontal):
             coordenadasNavio.append((nova_linha, coluna_inicial))
     return coordenadasNavio
 
+
 def dentro_do_tabuleiro(coordenadas):
     valido = True
     for linha, coluna in coordenadas:
         if linha < 0 or linha > 9 or coluna < 0 or coluna > 9:
             valido = False
     return valido
-        
+
+
 def sem_sobreposicao(coordenadas_novo_navio, ocupadas):
     valido = True
     for posicao in coordenadas_novo_navio:
         if posicao in ocupadas:
             valido = False
     return valido
+
 
 def posicionar_navio(tamanho, ocupadas):
     posicionado = False
@@ -53,10 +56,13 @@ def posicionar_navio(tamanho, ocupadas):
         coluna = random.randint(0, 9)
         horizontal = random.choice([True, False])
         candidatas = gerar_coordenadas(linha, coluna, tamanho, horizontal)
-        if dentro_do_tabuleiro(candidatas) and sem_sobreposicao(candidatas, ocupadas):
+        dentro = dentro_do_tabuleiro(candidatas)
+        sem_colisao = sem_sobreposicao(candidatas, ocupadas)
+        if dentro and sem_colisao:
             posicionado = True
             coordenadas = candidatas
     return coordenadas
+
 
 def criar_frota():
     navios = []
