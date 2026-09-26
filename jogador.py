@@ -9,6 +9,16 @@ class Jogador:
         self.frota = criar_frota()
         self.tabuleiro.posicionar_navios(self.frota)
 
+    def jogada_valida(self, coordenada, oponente):
+        linha, coluna = converter_coordenada(coordenada)
+        if not dentro_do_tabuleiro([(linha, coluna)]):
+            return False
+        else:
+            if oponente.tabuleiro.grade[linha][coluna] == "~":
+                return True
+            else:
+                return False
+
     def jogar(self, coordenada, oponente):
         if not self.jogada_valida(coordenada, oponente):
             return "invalida"
@@ -28,16 +38,6 @@ class Jogador:
             else:
                 return "acerto"
 
-    def jogada_valida(self, coordenada, oponente):
-        linha, coluna = converter_coordenada(coordenada)
-        if not dentro_do_tabuleiro([(linha, coluna)]):
-            return False
-        else:
-            if oponente.tabuleiro.grade[linha][coluna] == "~":
-                return True
-            else:
-                return False
-
     def perdeu(self):
         resultados = []
         for navio in self.frota:
@@ -55,5 +55,5 @@ if __name__ == "__main__":
     for posicao in j1.frota[0].coordenadas:
         j1.frota[0].registrar_tiro(posicao)
 
-    print(j1.perdeu())  
+    print(j1.perdeu())
     # ainda False, só 1 de 8 navios afundou
