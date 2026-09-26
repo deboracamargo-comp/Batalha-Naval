@@ -38,16 +38,22 @@ class Jogador:
             else:
                 return False
 
+    def perdeu(self):
+        resultados = []
+        for navio in self.frota:
+            resultados.append(navio.afundado())
+        return all(resultados)
+
 
 if __name__ == "__main__":
     j1 = Jogador()
     j2 = Jogador()
 
-    print(j2.frota[0].coordenadas)
-    resultado = j1.jogar("A3", j2)
-    print("Resultado do tiro:", resultado)
-    j2.tabuleiro.exibir_proprio()
-    print(j2.frota[0].coordenadas)
-    resultado = j1.jogar("A3", j2)
-    print("Resultado do tiro:", resultado)
-    j2.tabuleiro.exibir_proprio()
+    print(j1.perdeu())  # False, ninguém foi atingido ainda
+
+    # afunda o primeiro navio da frota do j1, na força bruta
+    for posicao in j1.frota[0].coordenadas:
+        j1.frota[0].registrar_tiro(posicao)
+
+    print(j1.perdeu())  
+    # ainda False, só 1 de 8 navios afundou
