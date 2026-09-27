@@ -14,10 +14,11 @@ class Jogador:
         if not dentro_do_tabuleiro([(linha, coluna)]):
             return False
         else:
-            if oponente.tabuleiro.grade[linha][coluna] == "~":
-                return True
-            else:
+            valor = oponente.tabuleiro.grade[linha][coluna]
+            if valor == "X" or valor == "O":
                 return False
+            else:
+                return True
 
     def jogar(self, coordenada, oponente):
         if not self.jogada_valida(coordenada, oponente):
