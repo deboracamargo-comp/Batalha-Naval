@@ -30,7 +30,7 @@ class Tabuleiro:
                 print(valor, end=" ")
             print()
 
-    def exibir_proprio(self): 
+    def exibir_proprio(self):
         self._exibir(False)
 
     def exibir_adversario(self):
