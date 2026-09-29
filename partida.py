@@ -22,6 +22,19 @@ def jogar_partida(contra_computador=False):
     historico = []
     inicio = time.time()
 
+    print("========================================")
+    print("CONFERÊNCIA DE FROTA — JOGADOR 1")
+    print("========================================")
+    j1.tabuleiro.exibir_proprio()
+    input("Pressione Enter para continuar...")
+
+    if not contra_computador:
+        print("========================================")
+        print("CONFERÊNCIA DE FROTA — JOGADOR 2")
+        print("========================================")
+        j2.tabuleiro.exibir_proprio()
+        input("Pressione Enter para continuar...")
+
     while not j1.perdeu() and not j2.perdeu():
         turno_do_computador = contra_computador and atacante is j2
         defensor.tabuleiro.exibir_adversario()
@@ -70,18 +83,23 @@ def jogar_partida(contra_computador=False):
     return vencedor, total_jogadas, duracao, historico
 
 
-def exibir_resultado(vencedor, total_jogadas, duracao):
-    """Exibe o resumo de fim de jogo: vencedor, total de jogadas e tempo."""
+def formatar_duracao(duracao):
+    """Converte uma duração em segundos para o formato HH:MM:SS."""
     segundos_totais = int(duracao)
     horas = segundos_totais // 3600
     minutos = segundos_totais // 60 - horas * 60
     segundos = segundos_totais % 60
+    return f"{horas:02}:{minutos:02}:{segundos:02}"
+
+
+def exibir_resultado(vencedor, total_jogadas, duracao):
+    """Exibe o resumo de fim de jogo: vencedor, total de jogadas e tempo."""
     print("========================================")
     print("FIM DO JOGO")
     print("========================================")
     print(f"Vencedor: {vencedor}")
     print(f"Total de jogadas: {total_jogadas}")
-    print(f"Tempo de partida: {horas:02}:{minutos:02}:{segundos:02}")
+    print(f"Tempo de partida: {formatar_duracao(duracao)}")
 
 
 def exibir_opcoes_fim_jogo(contra_computador):
@@ -104,14 +122,8 @@ def exibir_opcoes_fim_jogo(contra_computador):
             print("Opção inválida! Tente novamente!")
 
 
-def iniciar_partida(contra_computador=False):
-    """
-    Joga uma partida, salva o histórico e as estatísticas,
-    e exibe o resultado final.
-    """
-    vencedor, total_jogadas, duracao, historico = jogar_partida(
-        contra_computador
-    )
+def salvar_partida(vencedor, total_jogadas, historico):
+    """Salva o replay da partida e acrescenta o resultado às estatísticas."""
     with open("data/replay.json", "w") as arquivo:
         json.dump(historico, arquivo)
 
@@ -134,5 +146,15 @@ def iniciar_partida(contra_computador=False):
     with open("data/estatisticas.json", "w") as arquivo:
         json.dump(estatisticas, arquivo)
 
+
+def iniciar_partida(contra_computador=False):
+    """
+    Joga uma partida, salva o histórico e as estatísticas,
+    e exibe o resultado final.
+    """
+    vencedor, total_jogadas, duracao, historico = jogar_partida(
+        contra_computador
+    )
+    salvar_partida(vencedor, total_jogadas, historico)
     exibir_resultado(vencedor, total_jogadas, duracao)
     exibir_opcoes_fim_jogo(contra_computador)

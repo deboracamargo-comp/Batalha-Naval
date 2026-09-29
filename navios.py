@@ -20,6 +20,9 @@ class Navio:
 
 
 def gerar_coordenadas(linha_inicial, coluna_inicial, tamanho, horizontal):
+    """Gera a lista de coordenadas ocupadas por um navio
+    a partir de uma posição inicial.
+    """
     coordenadasNavio = []
     if horizontal:
         for i in range(tamanho):
@@ -33,6 +36,10 @@ def gerar_coordenadas(linha_inicial, coluna_inicial, tamanho, horizontal):
 
 
 def dentro_do_tabuleiro(coordenadas):
+    """
+    Verifica se todas as coordenadas fornecidas estão
+    dentro dos limites de um tabuleiro 10x10.
+    """
     valido = True
     for linha, coluna in coordenadas:
         if linha < 0 or linha > 9 or coluna < 0 or coluna > 9:
@@ -41,6 +48,10 @@ def dentro_do_tabuleiro(coordenadas):
 
 
 def sem_sobreposicao(coordenadas_novo_navio, ocupadas):
+    """
+    Verifica se as coordenadas do novo navio colidem
+    com posições ocupadas.
+    """
     valido = True
     for posicao in coordenadas_novo_navio:
         if posicao in ocupadas:
@@ -49,6 +60,7 @@ def sem_sobreposicao(coordenadas_novo_navio, ocupadas):
 
 
 def posicionar_navio(tamanho, ocupadas):
+    """Gera coordenadas válidas e sem sobreposição para um navio."""
     posicionado = False
     coordenadas = []
     while not posicionado:
@@ -65,6 +77,7 @@ def posicionar_navio(tamanho, ocupadas):
 
 
 def criar_frota():
+    """Gera a frota de navios (2 de tamanho 4 e 6 de tamanho 2)."""
     navios = []
     ocupadas = []
     for _ in range(2):
@@ -78,10 +91,3 @@ def criar_frota():
         navio = Navio(coords)
         navios.append(navio)
     return navios
-
-
-if __name__ == "__main__":
-    frota = criar_frota()
-    print(len(frota))  # deve dar 8
-    for navio in frota:
-        print(navio.coordenadas)

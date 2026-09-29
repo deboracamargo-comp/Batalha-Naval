@@ -32,7 +32,7 @@ def creditos():
     print("========================================")
     print("\tCRÉDITOS")
     print("========================================")
-    print("Nome do desenvolvedor: Débora Cristina Barbosa Camargo")
+    print("Nome do desenvolvedor: Débora Camargo")
     print("Professor: Guido Pantuza")
     print("Disciplina: Programação em Python")
     print("Nome do Projeto: GPTech Games")
@@ -64,7 +64,7 @@ def exibir_menu():
         elif opcao == 2:
             ver_estatisticas()
         elif opcao == 3:
-            ver_replay()
+            exibir_replay()
         elif opcao == 4:
             creditos()
         elif opcao == 5:
@@ -74,7 +74,10 @@ def exibir_menu():
 
 
 def exibir_opcoes_fim_jogo(contra_computador):
-    """Exibe as opções de pós-jogo: replay, nova partida ou menu principal."""
+    """
+    Exibe as opções de pós-jogo: replay,
+    nova partida ou menu principal.
+    """
     while True:
         print("[1] Ver replay  [2] Nova partida  [3] Menu principal")
         try:
@@ -91,7 +94,3 @@ def exibir_opcoes_fim_jogo(contra_computador):
             break
         else:
             print("Opção inválida! Tente novamente!")
-
-
-if __name__ == "__main__":
-    exibir_menu()

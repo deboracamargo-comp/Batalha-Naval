@@ -26,6 +26,7 @@ class Jogador:
         return True
 
     def jogar(self, coordenada, oponente):
+        """Realiza um disparo contra o oponente e atualiza o tabuleiro."""
         if not self.jogada_valida(coordenada, oponente):
             return "invalida"
         linha, coluna = converter_coordenada(coordenada)
@@ -45,21 +46,8 @@ class Jogador:
                 return "acerto"
 
     def perdeu(self):
+        """Verifica se o jogador perdeu o jogo."""
         resultados = []
         for navio in self.frota:
             resultados.append(navio.afundado())
         return all(resultados)
-
-
-if __name__ == "__main__":
-    j1 = Jogador()
-    j2 = Jogador()
-
-    print(j1.perdeu())  # False, ninguém foi atingido ainda
-
-    # afunda o primeiro navio da frota do j1, na força bruta
-    for posicao in j1.frota[0].coordenadas:
-        j1.frota[0].registrar_tiro(posicao)
-
-    print(j1.perdeu())
-    # ainda False, só 1 de 8 navios afundou

@@ -1,12 +1,19 @@
 import json
 
 
-def exibir_replay():
-    """Reproduz, jogada a jogada, o histórico da última partida salva."""
+def carregar_replay():
+    """Lê o histórico da última partida. Retorna None se não existir."""
     try:
         with open("data/replay.json", "r") as arquivo:
-            historico = json.load(arquivo)
+            return json.load(arquivo)
     except FileNotFoundError:
+        return None
+
+
+def exibir_replay():
+    """Reproduz, jogada a jogada, o histórico da última partida salva."""
+    historico = carregar_replay()
+    if historico is None:
         print("Nenhuma partida foi jogada ainda.")
         input("Pressione Enter para voltar ao menu...")
         return

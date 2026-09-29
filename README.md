@@ -1,203 +1,183 @@
-# Batalha Naval - GPTech Games
+# 🚢 Batalha Naval — GPTech Games
 
-Documentação do sistema de Batalha Naval desenvolvido em Python, com suporte a partidas contra inteligência artificial ou entre dois jogadores humanos, persistência de dados, estatísticas de desempenho e reprodução de histórico de jogadas (replay).
+> Trabalho 1 da disciplina **Programação em Python**
+> Professor: Guido Pantuza — CEFET-MG, Campus Divinópolis
+> Desenvolvedora: **Débora Cristina Barbosa Camargo**
 
----
+Implementação do jogo Batalha Naval em modo texto, em Python, a partir do
+Documento de Requisitos do projeto fictício "Sistema de Batalha Naval —
+GPTech Games". O projeto foi construído em Programação Orientada a
+Objetos, modularizado por responsabilidade e com persistência de dados em
+JSON.
 
-## Sumário
-
-- [1. Sobre o Projeto](#1-sobre-o-projeto)
-- [2. Autora e Créditos](#2-autora-e-créditos)
-- [3. Estrutura de Arquivos](#3-estrutura-de-arquivos)
-- [4. Módulos e Funções](#4-módulos-e-funções)
-  - [4.1 main.py](#41-mainpy)
-  - [4.2 utils.py](#42-utilspy)
-  - [4.3 tabuleiro.py](#43-tabuleiropy)
-  - [4.4 navios.py](#44-naviospy)
-  - [4.5 jogador.py](#45-jogadorpy)
-  - [4.6 computador.py](#46-computadorpy)
-  - [4.7 partida.py](#47-partidapy)
-  - [4.8 replay.py](#48-replaypy)
-  - [4.9 estatisticas.py](#49-estatisticaspy)
-  - [4.10 menu.py](#410-menupy)
-- [5. Como Executar](#5-como-executar)
+🔗 **Repositório:** https://github.com/deboracamargo-comp/Batalha-Naval
+🎥 **Vídeo de demonstração:** [link do vídeo]
 
 ---
 
-## 1. Sobre o Projeto
+## 📋 Sumário
 
-O projeto é uma implementação completa do jogo de tabuleiro Batalha Naval via linha de comando. Ele permite a alocação automática de frota em uma grade de $10 \times 10$, validação estrita de coordenadas, persistência do histórico em formato JSON, cálculo de métricas e exibição turno a turno da última partida disputada.
-
----
-
-## 2. Autora e Créditos
-
-- **Desenvolvedora:** Débora Cristina Barbosa Camargo
-- **Professor Orientador:** Guido Pantuza
-- **Disciplina:** Programação em Python
-- **Empresa/Projeto:** GPTech Games
+- [Como executar](#-como-executar)
+- [Como jogar](#-como-jogar)
+- [Estrutura do projeto](#-estrutura-do-projeto)
+- [Decisões de projeto](#-decisões-de-projeto)
+- [Funcionalidades](#-funcionalidades-implementadas)
+- [Requisitos não funcionais](#-requisitos-não-funcionais)
+- [Diário de desenvolvimento](#-diário-de-desenvolvimento)
 
 ---
 
-## 3. Estrutura de Arquivos
+## ▶️ Como executar
 
-```text
-.
-├── data/
-│   ├── estatisticas.json    # Registro acumulado das partidas finalizadas
-│   └── replay.json          # Histórico detalhado de jogadas da última partida
-├── computador.py            # Lógica das jogadas automáticas do computador
-├── estatisticas.py          # Leitura e apresentação das métricas do jogador
-├── jogador.py               # Classe Jogador e regras de turno/ataque
-├── main.py                  # Ponto de entrada do programa
-├── menu.py                  # Interfaces de menu principal e submenus
-├── navios.py                # Classe Navio e geração/posicionamento de frotas
-├── partida.py               # Controle do fluxo da partida e persistência
-├── replay.py                # Reprodutor do histórico de jogadas
-├── tabuleiro.py             # Classe Tabuleiro e renderização gráfica via terminal
-└── utils.py                 # Funções auxiliares de conversão de coordenadas
-```
-
----
-
-## 4. Módulos e Funções
-
-### 4.1 main.py
-
-Ponto de entrada para inicialização do jogo.
-
-* `if __name__ == "__main__":`  
-  Invoca a função `exibir_menu()` do módulo `menu.py` para dar início ao programa.
-
----
-
-### 4.2 utils.py
-
-Contém rotinas utilitárias para manipulação e conversão de dados.
-
-* `converter_coordenada(coordenada)`  
-  Recebe uma string com uma coordenada no formato letra-número (ex.: `"A1"`, `"C5"`, `"J10"`) e a converte em uma tupla de inteiros `(linha, coluna)` indexados em zero, apropriados para manipulação de matrizes.
-
----
-
-### 4.3 tabuleiro.py
-
-Gerencia a estrutura e a renderização da grade do jogo.
-
-* `Tabuleiro.__init__()`  
-  Instancia um tabuleiro $10 \times 10$ inicializado com o caractere `"~"`, representando água.
-* `Tabuleiro.posicionar_navios(navios)`  
-  Aloca os navios da frota no tabuleiro, atribuindo a letra `"N"` a cada coordenada ocupada.
-* `Tabuleiro._exibir(esconder_navios)`  
-  Método privado que imprime a grade formatada no terminal com eixos horizontais (A-J) e verticais (1-10). Quando `esconder_navios` é verdadeiro, substitui as posições `"N"` por `"~"`.
-* `Tabuleiro.exibir_proprio()`  
-  Chama `_exibir(False)` para mostrar o tabuleiro completo com a frota visível.
-* `Tabuleiro.exibir_adversario()`  
-  Chama `_exibir(True)` para ocultar os navios do oponente durante a fase de ataque.
-
----
-
-### 4.4 navios.py
-
-Mapeia as embarcações e provê a lógica de sorteio e posicionamento.
-
-* `Navio.__init__(coordenadas)`  
-  Cria o objeto da embarcação, armazenando suas coordenadas e um vetor de booleanos (`atingidas`) inicializado como `False` para acompanhar os acertos.
-* `Navio.registrar_tiro(posicao)`  
-  Verifica se a posição disparada faz parte do navio. Se fizer, marca a posição como atingida e retorna `True`; caso contrário, retorna `False`.
-* `Navio.afundado()`  
-  Retorna `True` caso todas as posições da embarcação tenham sido atingidas.
-* `gerar_coordenadas(linha_inicial, coluna_inicial, tamanho, horizontal)`  
-  Gera uma sequência de coordenadas ordenadas a partir de uma posição inicial, respeitando a orientação (horizontal ou vertical).
-* `dentro_do_tabuleiro(coordenadas)`  
-  Verifica se todas as coordenadas pertencem aos limites do tabuleiro ($0 \le \text{linha} \le 9$ e $0 \le \text{coluna} \le 9$).
-* `sem_sobreposicao(coordenadas_novo_navio, ocupadas)`  
-  Valida se as coordenadas de um novo navio não colidem com posições de navios já alocados.
-* `posicionar_navio(tamanho, ocupadas)`  
-  Gera posições aleatórias continuamente até encontrar uma combinação válida e livre para um determinado tamanho de navio.
-* `criar_frota()`  
-  Instancia e retorna uma frota completa contendo 8 navios (2 navios de tamanho 4 e 6 navios de tamanho 2).
-
----
-
-### 4.5 jogador.py
-
-Abstrai as ações de um participante do jogo.
-
-* `Jogador.__init__()`  
-  Instancia o tabuleiro e a frota do jogador, posicionando as embarcações automaticamente.
-* `Jogador.jogada_valida(coordenada, oponente)`  
-  Valida se a coordenada informada pelo jogador é sintaticamente correta, está dentro dos limites do tabuleiro e ainda não foi atacada anteriormente.
-* `Jogador.jogar(coordenada, oponente)`  
-  Aplica o ataque no oponente. Retorna `"invalida"` para disparos incorretos, `"agua"` quando não atinge nada, `"acerto"` quando atinge um segmento e `"afundou"` caso a embarcação seja destruída.
-* `Jogador.perdeu()`  
-  Avalia se todas as embarcações da frota do jogador foram afundadas.
-
----
-
-### 4.6 computador.py
-
-Controla as ações automatizadas da inteligência artificial.
-
-* `sortear_coordenada()`  
-  Gera aleatoriamente uma coordenada formatada em string (ex.: `"E7"`).
-* `jogada_computador(computador, oponente)`  
-  Realiza sorteios sucessivos até obter uma coordenada que represente uma jogada válida contra o oponente.
-
----
-
-### 4.7 partida.py
-
-Gerencia o ciclo de vida completo de um jogo e a persistência de dados.
-
-* `jogar_partida(contra_computador=False)`  
-  Coordena os turnos entre os dois participantes, colhe as entradas do usuário ou do computador, atualiza os estados dos tabuleiros, contabiliza o tempo e registra o histórico da partida.
-* `exibir_resultado(vencedor, total_jogadas, duracao)`  
-  Formatada e exibe o painel de encerramento com informações de vencedor, total de rodadas e duração em formato $HH:MM:SS$.
-* `exibir_opcoes_fim_jogo(contra_computador)`  
-  Exibe o menu de opções pós-partida, permitindo rever o replay, iniciar um novo jogo ou retornar ao menu principal.
-* `iniciar_partida(contra_computador=False)`  
-  Função controladora que chama `jogar_partida`, grava o histórico em `data/replay.json` e atualiza o arquivo `data/estatisticas.json`.
-
----
-
-### 4.8 replay.py
-
-Módulo para reprodução passo a passo de partidas passadas.
-
-* `exibir_replay()`  
-  Carrega o arquivo `data/replay.json` e exibe sequencialmente cada jogada realizada na partida anterior, permitindo que o usuário avance manualmente ou encerre a visualização.
-
----
-
-### 4.9 estatisticas.py
-
-Módulo responsável pela consolidação e exibição de estatísticas.
-
-* `exibir_estatisticas()`  
-  Lê os registros do arquivo `data/replay.json`, calcula a quantidade de disparos, total de acertos e percentual de aproveitamento do jogador.
-
----
-
-### 4.10 menu.py
-
-Interface em modo texto para interação e navegação do usuário.
-
-* `nova_partida()`  
-  Apresenta o submenu para escolha do modo de jogo (Jogador vs Computador ou Dois Jogadores).
-* `creditos()`  
-  Exibe as informações sobre a desenvolvedora, orientador e instituição.
-* `exibir_menu()`  
-  Menu principal do jogo que direciona para a criação de partidas, estatísticas, replay, créditos ou encerramento.
-* `exibir_opcoes_fim_jogo(contra_computador)`  
-  Menu de navegação exibido ao final de cada partida.
-
----
-
-## 5. Como Executar
-
-1. Certifique-se de ter o **Python 3.8** ou superior instalado no seu sistema.
-2. Navegue até o diretório do projeto via terminal:
+Requer **Python 3.10** ou superior. A versão de terminal não precisa de
+nenhuma dependência externa — só a biblioteca padrão.
 
 ```bash
+git clone [link do repositório]
+cd BatalhaNaval
 python main.py
+```
+
+O jogo abre direto no menu principal.
+
+### Interface gráfica (PyGame)
+
+Também há uma versão com janela, que usa a mesma lógica do jogo de terminal.
+Ela precisa do PyGame (no Python 3.14+, use o `pygame-ce`, que tem a mesma API):
+
+```bash
+pip install -r requirements.txt
+python gui.py
+```
+
+Na interface gráfica, o ataque é feito clicando numa célula do tabuleiro
+adversário (à direita). No modo Dois Jogadores, uma tela de "passe o
+computador" aparece entre os turnos para que um jogador não veja os navios
+do outro.
+
+## 🎮 Como jogar
+
+Ao iniciar uma nova partida, o programa pergunta o modo de jogo:
+
+| Opção | Modo                 | Descrição                                      |
+|:-----:|----------------------|-------------------------------------------------|
+| 1     | Jogador vs Computador | Você joga contra um oponente controlado pelo computador, que joga de forma autônoma. |
+| 2     | Dois Jogadores        | Dois jogadores humanos se alternam no mesmo terminal. |
+
+Antes da partida começar, cada jogador vê seu próprio tabuleiro para
+conferir o posicionamento da frota (sorteada automaticamente). A cada
+turno, o atacante digita uma coordenada no formato **letra + número**
+(ex.: `C5`, colunas de A a J, linhas de 1 a 10) para atirar no tabuleiro
+adversário.
+
+Ao final da partida, é possível:
+
+- ver o replay, jogada a jogada, da partida que acabou de terminar;
+- iniciar uma nova partida no mesmo modo;
+- voltar ao menu principal.
+
+## 🗂️ Estrutura do projeto
+BatalhaNaval/
+├── main.py # Ponto de entrada: abre o menu principal
+├── menu.py # Menu principal e seleção de modo de jogo
+├── partida.py # Fluxo de uma partida: turnos, fim de jogo,
+│ # persistência de replay e estatísticas
+├── tabuleiro.py # Classe Tabuleiro: grade 10x10 e exibição
+├── navios.py # Classe Navio e posicionamento automático da frota
+├── jogador.py # Classe Jogador: tabuleiro e frota próprios,
+│ # processamento de tiros e validação de jogadas
+├── computador.py # Lógica do modo Jogador x Computador
+├── utils.py # Conversão de coordenadas (ex.: "C5" → índices)
+├── estatisticas.py # Exibição das estatísticas acumuladas
+├── replay.py # Reprodução passo a passo do histórico salvo
+├── data/ # Arquivos gerados em tempo de execução
+│ ├── replay.json # histórico da última partida
+│ └── estatisticas.json # estatísticas acumuladas entre partidas
+└── docs/ # Documentação complementar
+
+Cada módulo tem uma responsabilidade única (RNF04): `tabuleiro.py` e
+`navios.py` conhecem apenas seu próprio domínio, `jogador.py` os combina
+para representar um jogador completo, e `partida.py` orquestra o fluxo do
+jogo sem se preocupar com os detalhes internos de cada peça.
+
+## 🧠 Decisões de projeto
+
+- **Paradigma.** O jogo foi implementado em Programação Orientada a
+  Objetos, com `Tabuleiro`, `Navio` e `Jogador` como núcleo do domínio.
+
+- **Composição da frota.** Cada jogador recebe 2 navios grandes (4
+  posições) e 6 navios pequenos (2 posições) — 20 das 100 posições do
+  tabuleiro. O enunciado não fixa a quantidade de navios por tipo; esse
+  número foi escolhido para equilibrar duração e dificuldade da partida.
+
+- **Posicionamento automático.** Cada navio é posicionado por sorteio de
+  posição inicial e orientação (horizontal ou vertical). A cada
+  tentativa, verifica-se se todas as posições calculadas cabem dentro do
+  tabuleiro e não colidem com navios já posicionados; caso contrário, uma
+  nova tentativa é sorteada, até encontrar uma posição válida.
+
+- **`main.py` como porta de entrada única.** Toda a lógica de partida foi
+  isolada em `partida.py`, e `main.py` apenas inicia o menu. Isso evita
+  uma dependência circular entre `menu.py` (que precisa iniciar uma
+  partida) e a lógica de jogo, e deixa o ponto de entrada do programa
+  fácil de entender de relance.
+
+- **Persistência em JSON.** O histórico de jogadas de cada partida é
+  salvo em `data/replay.json`, sobrescrito a cada partida (guarda sempre
+  a *última*). As estatísticas ficam em `data/estatisticas.json`, como
+  uma lista que cresce a cada partida jogada — permitindo calcular o
+  aproveitamento acumulado, não apenas o da última partida.
+
+- **Modo Jogador x Computador.** O computador sorteia coordenadas e só
+  efetiva a jogada quando ela é válida, reaproveitando exatamente a
+  mesma validação usada para jogadas humanas — garantindo que as duas
+  formas de jogar sigam as mesmas regras.
+
+- **Validação de entradas.** Conversões de coordenada e leitura de opções
+  numéricas de menu são protegidas com `try`/`except`, para que uma
+  entrada mal formatada gere uma mensagem de erro, e não o encerramento
+  do programa.
+
+## ✅ Funcionalidades implementadas
+
+| Requisito | Descrição                                              | Status |
+|:---------:|----------------------------------------------------------|:------:|
+| RF01      | Menu principal com as opções do sistema                  | ✅ |
+| RF02      | Tabuleiro 10x10 por jogador                               | ✅ |
+| RF03      | Navios pequeno (2) e grande (4 posições)                  | ✅ |
+| RF04      | Posicionamento automático sem sobreposição                | ✅ |
+| RF05      | Validação de jogadas (limites e repetição)                 | ✅ |
+| RF06      | Mensagens de água, acerto e navio afundado                  | ✅ |
+| RF07      | Fim de partida com vencedor, jogadas e tempo                 | ✅ |
+| RF08      | Nova partida a qualquer momento pelo menu                     | ✅ |
+| RF09      | Modos Jogador x Computador e Dois Jogadores                    | ✅ |
+| RF10      | Posicionamento e conferência dos navios                         | ✅ |
+| RF11      | Histórico de jogadas da partida                                  | ✅ |
+| RF12      | Estatísticas de desempenho acumuladas                              | ✅ |
+| RF13      | Replay passo a passo da última partida                              | ✅ |
+
+## ⚙️ Requisitos não funcionais
+
+- Implementação em **Python 3.10+**
+- Código aderente ao **PEP 8** (verificado com Flake8)
+- Sistema **organizado em módulos coesos**, um por responsabilidade
+- **Tratamento de erros** nas entradas do usuário
+- Execução validada em ambiente Windows/Linux via terminal
+
+## 📓 Diário de desenvolvimento
+
+O desenvolvimento seguiu incrementalmente, módulo a módulo, começando pelo
+tabuleiro e pela conversão de coordenadas, passando pela classe de navios e
+seu posicionamento automático, depois pela classe de jogador e a lógica de
+turnos, até chegar ao menu, ao modo contra o computador e à persistência de
+replay e estatísticas. As principais dificuldades encontradas foram:
+
+- Um bug clássico de Python vindo de C: `[[...] * 10] * 10` cria referências
+  repetidas para a mesma lista interna, em vez de linhas independentes —
+  resolvido construindo a grade com um laço aninhado.
+- Uma validação de jogada que rejeitava indevidamente posições com navio
+  ainda não atingido (tratava apenas `"~"` como válido, não `"N"`) —
+  corrigida para tratar como inválidas apenas posições já marcadas com
+  `"X"` ou `"O"`.
+- Uma dependência circular entre o menu e a lógica de partida, resolvida
+  isolando o fluxo de partida em um módulo próprio (`partida.py`).
