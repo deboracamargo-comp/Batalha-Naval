@@ -10,15 +10,20 @@ class Jogador:
         self.tabuleiro.posicionar_navios(self.frota)
 
     def jogada_valida(self, coordenada, oponente):
-        linha, coluna = converter_coordenada(coordenada)
+        """
+        Verifica se a coordenada está dentro
+        do tabuleiro e não foi jogada antes.
+        """
+        try:
+            linha, coluna = converter_coordenada(coordenada)
+        except (ValueError, IndexError):
+            return False
         if not dentro_do_tabuleiro([(linha, coluna)]):
             return False
-        else:
-            valor = oponente.tabuleiro.grade[linha][coluna]
-            if valor == "X" or valor == "O":
-                return False
-            else:
-                return True
+        valor = oponente.tabuleiro.grade[linha][coluna]
+        if valor in ["X", "O"]:
+            return False
+        return True
 
     def jogar(self, coordenada, oponente):
         if not self.jogada_valida(coordenada, oponente):

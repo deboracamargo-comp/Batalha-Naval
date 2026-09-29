@@ -1,6 +1,6 @@
-from main import jogar_partida
+from partida import iniciar_partida
 from replay import exibir_replay
-from estatisticas import exibir_estatisticas
+from estatisticas import ver_estatisticas
 
 
 def nova_partida():
@@ -10,27 +10,21 @@ def nova_partida():
         print(" [1]Jogador vs Computador")
         print(" [2]Dois Jogadores")
         print(" [0]Voltar ao menu")
-        modo_de_jogo = int(input("\n>>_"))
+        try:
+            modo_de_jogo = int(input("\n>>_"))
+        except ValueError:
+            print("Opção inválida! Tente novamente!")
+            continue
         if modo_de_jogo == 1:
-            jogar_partida(contra_computador=True)
+            iniciar_partida(contra_computador=True)
             break
         elif modo_de_jogo == 2:
-            jogar_partida()
+            iniciar_partida()
             break
         elif modo_de_jogo == 0:
             break
         else:
             print("Opção inválida! Tente novamente!")
-
-
-def ver_estatisticas():
-    """Exibe as estatísticas de desempenho a partir do histórico salvo."""
-    exibir_estatisticas()
-
-
-def ver_replay():
-    """Reproduz, jogada a jogada, o histórico da última partida salva."""
-    exibir_replay()
 
 
 def creditos():
@@ -59,7 +53,11 @@ def exibir_menu():
         print("4. Créditos")
         print("5. Sair")
         print("----------------------------------------")
-        opcao = int(input("Escolha uma opção:_ "))
+        try:
+            opcao = int(input("Escolha uma opção:_ "))
+        except ValueError:
+            print("Opção inválida! Tente novamente!")
+            continue
 
         if opcao == 1:
             nova_partida()
@@ -71,6 +69,26 @@ def exibir_menu():
             creditos()
         elif opcao == 5:
             print("Saindo do jogo...")
+        else:
+            print("Opção inválida! Tente novamente!")
+
+
+def exibir_opcoes_fim_jogo(contra_computador):
+    """Exibe as opções de pós-jogo: replay, nova partida ou menu principal."""
+    while True:
+        print("[1] Ver replay  [2] Nova partida  [3] Menu principal")
+        try:
+            opcao = int(input("Escolha uma opção: "))
+        except ValueError:
+            print("Opção inválida! Tente novamente!")
+            continue
+        if opcao == 1:
+            exibir_replay()
+        elif opcao == 2:
+            iniciar_partida(contra_computador)
+            break
+        elif opcao == 3:
+            break
         else:
             print("Opção inválida! Tente novamente!")
 
