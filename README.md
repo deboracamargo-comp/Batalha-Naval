@@ -11,7 +11,7 @@ Objetos, modularizado por responsabilidade e com persistência de dados em
 JSON.
 
 🔗 **Repositório:** https://github.com/deboracamargo-comp/Batalha-Naval
-🎥 **Vídeo de demonstração:** [link do vídeo]
+🎥 **Vídeo de demonstração:** https://youtu.be/N8ePv8MI7K4
 
 ---
 
